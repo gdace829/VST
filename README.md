@@ -6,7 +6,7 @@
 
 ### [Project Page](https://1ranguan.github.io/VST/)
 
-[![arXiv](https://img.shields.io/badge/arXiv-Paper-b31b1b?style=flat-square&logo=arxiv)]()
+[![arXiv](https://img.shields.io/badge/arXiv-Paper-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2603.12262)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue?style=flat-square)]()
 
 </div>
@@ -44,4 +44,12 @@ We thank the following great works and open-source repositories:
 - [StreamingVLM](https://github.com/mit-han-lab/streaming-vlm)
 - [MemAgent](https://github.com/BytedTsinghua-SIA/MemAgent)
 - [Streamingthinker](https://github.com/EIT-NLP/StreamingLLM)
-## 📖 Citation (TBD)
+## 📖 Citation
+```
+@article{guan2026videostreamingthinking,
+      title={Video Streaming Thinking: VideoLLMs Can Watch and Think Simultaneously}, 
+      author={Yiran Guan and Liang Yin and Dingkang Liang and Jianzhong Ju and Zhenbo Luo and Jian Luan and Yuliang Liu and Xiang Bai},
+      journal={arXiv preprint arXiv:2603.12262},
+      year={2026},
+}
+```
