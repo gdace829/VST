@@ -1,0 +1,14 @@
+# video_holmes.yaml
+include: _default_template.yaml
+
+task: video_holmes
+test_split: test
+output_type: generate_until
+
+lmms_eval_specific_kwargs:
+  default:
+    cot_prompt: "Based on the given video, reason and answer the single-choice question. Provide your reasoning between the <think> and </think> tags, and then give your final answer between the <answer> and </answer> tags."
+    
+    format_template: "The question is: {question}. The options are: {options}. Your answer:"
+
+

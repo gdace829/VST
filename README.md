@@ -4,10 +4,10 @@
 
 ### VideoLLMs Can Watch and Think Simultaneously
 
-### [Project Page](https://1ranguan.github.io/VST/)
-
 [![arXiv](https://img.shields.io/badge/arXiv-Paper-b31b1b?style=flat-square&logo=arxiv)](https://arxiv.org/abs/2603.12262)
+[![Homepage](https://img.shields.io/badge/Homepage-project-orange.svg?logo=googlehome)](https://1ranguan.github.io/VST/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue?style=flat-square)]()
+[![Model](https://img.shields.io/badge/🤗%20Model-HuggingFace-yellow?style=flat-square)](https://huggingface.co/Catalan258/VST-7B)
 
 </div>
 
@@ -34,7 +34,7 @@ Instead of deferring all reasoning until a user query arrives, VST continuously 
 
 ## 📅 TODO
 - [x] Release the paper.
-- [ ] Release checkpoint and eval code.
+- [x] Release checkpoint and eval code.
 - [ ] Release training code.
 - [ ] Release training data.
 

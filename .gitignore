@@ -1,0 +1,108 @@
+# ==========================================
+# 1. Python Compilation & Cache
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ==========================================
+# 2. Virtual Environments
+# ==========================================
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ==========================================
+# 3. Environment Variables & Secrets
+# ==========================================
+.env.local
+.env.*.local
+*.env
+secrets.json
+
+# ==========================================
+# 4. IDE & Editor Configurations
+# ==========================================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+.DS_Store?
+._*
+
+# ==========================================
+# 5. Testing & Coverage Reports
+# ==========================================
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+htmlcov/
+
+# ==========================================
+# 6. Jupyter Notebook & IPython
+# ==========================================
+.ipynb_checkpoints
+profile_default/
+ipython_config.py
+
+# ==========================================
+# 7. Machine Learning & Data Science
+# ==========================================
+# Model weights and checkpoints
+*.pth
+*.pt
+*.h5
+*.ckpt
+*.safetensors
+checkpoints/
+models/
+
+# Datasets and processing results
+data/
+datasets/
+*.mp4
+*.avi
+*.jpg
+*.png
+*.csv
+*.tsv
+*.jsonl
+
+# Logs and tracking
+logs/
+*.log
+runs/
