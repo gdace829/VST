@@ -20,6 +20,8 @@
 
 Existing online VideoLLMs focus on efficient streaming perception but lack explicit analytical reasoning. Offline VideoLLMs with Chain-of-Thought (CoT) can reason deeply, but incur high query-answer (QA) latency that violates real-time constraints. **VST bridges this gap** by shifting the LLM backend from passive waiting to active, intermittent reasoning *during* video consumption, implementing a **thinking-while-watching** mechanism inspired by human neural coupling.
 
+https://github.com/user-attachments/assets/49846db5-bf76-4cf8-b923-4b9b88117482
+
 ### ✨ Key Idea
 
 Instead of deferring all reasoning until a user query arrives, VST continuously processes incoming video clips and produces **intermediate streaming thoughts** in real time. This front-loads and amortizes the reasoning cost, so the final response is both **deeply grounded** and **instantly available**.
