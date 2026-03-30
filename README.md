@@ -37,7 +37,7 @@ Instead of deferring all reasoning until a user query arrives, VST continuously 
 ## 📅 TODO
 - [x] Release the paper.
 - [x] Release checkpoint and eval code.
-- [ ] Release training code.
+- [x] Release training code.
 - [ ] Release training data.
 
 

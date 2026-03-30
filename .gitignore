@@ -92,7 +92,7 @@ checkpoints/
 models/
 
 # Datasets and processing results
-data/
+# data/
 datasets/
 *.mp4
 *.avi
