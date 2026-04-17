@@ -55,3 +55,7 @@ We thank the following great works and open-source repositories:
       year={2026},
 }
 ```
+Token usage: total=544,864 input=478,709 (+ 14,908,416 cached) output=66,155 (reasoning 23,029)
+To continue this session, run codex resume 019d809d-cf68-7493-8ac3-cc876316db7f
+codex resume 019d809d-cf68-7493-8ac3-cc876316db7f
+codex resume 019d809d-cf68-7493-8ac3-cc876316db7f

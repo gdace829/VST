@@ -35,6 +35,12 @@ LABEL_PATH=""
 TRAIN_FILES=("${TRAIN_DATASET_NAMES[@]/#/$LABEL_PATH/}")
 VALID_FILES=("${VALID_DATASET_NAMES[@]/#/$LABEL_PATH/}")
 
+# SFT说明：
+# 这个脚本不会在线构造 teacher trajectory。
+# 它假设训练标注已经预先整理成 JSONL，然后直接读取这些样本做训练。
+# 当前 VST-SFT 的监督目标是流式 assistant 文本 / thought-like 输出，
+# 还不是显式的 memory-action 标签。
+
 export TORCH_NCCL_HEARTBEAT_TIMEOUT_SEC=1800 
 
 
@@ -44,7 +50,9 @@ GPUS_PER_NODE=8
 
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 export TOKENIZERS_PARALLELISM=false
-
+    # SFT说明：
+    # 这些标注文件会被 lmm_dataset.py 里的 streamingDataset 读取。
+    # 每条原始样本会被展开成一串多轮 streaming conversation。
 # === 启动命令 ===
 torchrun --nproc_per_node=$RESOURCE_GPU \
     --nnodes=$WORLD_SIZE \

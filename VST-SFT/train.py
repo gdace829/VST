@@ -20,6 +20,7 @@ from models import ModelArguments
 from streaming_vlm.data.lmm_dataset import DataArguments, EvalDataArguments
 # from streaming_vlm.data.lmm_dataset import LMMDataset 
 from streaming_vlm.data.lmm_dataset import streamingDataset as LMMDataset 
+from streaming_vlm.data.write_traj_dataset import WriteTrajectoryDataset
 from transformers import set_seed
 
 logger = logging.get_logger(__name__)
@@ -89,10 +90,23 @@ if __name__ == "__main__":
     else:
         processor = AutoProcessor.from_pretrained(model_args.pretrained_model_name_or_path, padding_side='right',trust_remote_code=True)
 
+    use_write_traj_dataset = bool(data_args.train_write_traj_paths or eval_data_args.eval_write_traj_paths)
+    dataset_cls = WriteTrajectoryDataset if use_write_traj_dataset else LMMDataset
 
-    train_dataset = LMMDataset(**asdict(data_args), **asdict(training_args), **asdict(model_args), processor=processor)
-    eval_dataset = LMMDataset(**asdict(data_args), **asdict(eval_data_args), **asdict(training_args), **asdict(model_args), processor=processor
-        )
+    # SFT说明：
+    # 默认还是原来的 streamingDataset，学习的是:
+    # clip/history -> assistant text。
+    # 如果显式传入 train_write_traj_paths / eval_write_traj_paths，
+    # 则切换到 WriteTrajectoryDataset，学习的是:
+    # (state -> teacher_action + write_content)。
+    train_dataset = dataset_cls(**asdict(data_args), **asdict(training_args), **asdict(model_args), processor=processor)
+    eval_dataset = dataset_cls(
+        **asdict(data_args),
+        **asdict(eval_data_args),
+        **asdict(training_args),
+        **asdict(model_args),
+        processor=processor,
+    )
     # Add after model is built but before Trainer
     if hasattr(model, "llm_model_embed_tokens"):
         print("delattr llm_model_embed_tokens")
@@ -109,6 +123,11 @@ if __name__ == "__main__":
         data_collator=train_dataset.data_collator,
         processing_class=processor
     )
+    # SFT说明：
+    # loss 仍然是标准的 next-token prediction，只在 assistant span 上计算。
+    # Trainer 本身没有特殊 streaming 逻辑；
+    # 真正让它变成“流式 SFT”的关键，在于 lmm_dataset.py
+    # 会把每条样本展开成多轮 clip-level supervision。
     trainer.compute_loss = MethodType(compute_loss_logging_labels, trainer)
     # Pass specific path or False depending on whether resuming training
     trainer.train(resume_from_checkpoint=resume_ckpt if resume_ckpt else False)

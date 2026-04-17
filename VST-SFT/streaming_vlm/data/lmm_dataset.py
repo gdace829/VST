@@ -31,6 +31,7 @@ logger = logging.get_logger(__name__)
 @dataclass
 class DataArguments:
     train_annotation_paths: list[str] = None
+    train_write_traj_paths: list[str] = None
     initial_fps_frames: int = int(FPS)
     streaming_fps_frames: int = int(FPS)
     with_context: bool = False
@@ -40,6 +41,7 @@ class DataArguments:
 @dataclass
 class EvalDataArguments:
     eval_annotation_paths: list[str] = None
+    eval_write_traj_paths: list[str] = None
 
 def readlastline(path: str):
     """Efficiently read the last line of a file."""
@@ -552,6 +554,11 @@ class streamingDataset(LMMDataset):
             - For ours, we use a Pyscene-detect-based CLIP method to simulate the streaming process.
             The program first reads the conversation, if duration of two consecutive turns is larger than self.streaming_fps_frames, we use the time-clock directly. Otherwise, we use t0+self.streaming_fps_frames.
         """
+        # SFT说明：
+        # 这里是当前 VST 风格 SFT 的核心数据展开步骤。
+        # 一条原始样本会被改写成按时间切开的多轮 user/assistant 对话，
+        # 每一轮都对齐一个局部视频 clip。
+        # 监督目标仍然是 assistant 文本，而不是 memory action。
         user_message, assistant_message = conversation
         user_content, assistant_content = user_message['content'], assistant_message['content']
 
@@ -617,6 +624,12 @@ class streamingDataset(LMMDataset):
             
             assistant_content = [{'type': 'text', 'text': answer + phrase }]
 
+            # SFT说明：
+            # 每个 clip 会被变成一轮训练样本：
+            # user = 当前时间戳 + 当前视频片段 + instruction
+            # assistant = 这一段对应的文本监督
+            # 这就是 VST 风格的 sequence-style intermediate supervision。
+
             conversation.extend([
                 {
                     'role': 'user',
@@ -659,6 +672,10 @@ class streamingDataset(LMMDataset):
             )
             
             assistant_content = [{'type': 'text', 'text': answer + phrase }]
+
+            # SFT说明：
+            # qa_stream 会在 clip-text stream 之外，再补充显式 QA 轮次。
+            # 但训练目标仍然是 assistant 文本生成，不是动作分类。
             conversation.extend([
                 {
                     'role': 'user',
@@ -744,6 +761,9 @@ class streamingDataset(LMMDataset):
         
         
         if special_process_for_stream:
+            # SFT说明：
+            # 对于 streaming 样本，会先把原始标注展开成按时间排列的多轮对话。
+            # 也就是说，长视频是在这里被转换成 sequential supervision trajectory 的。
             conversation, video_inputs = self.preprocess_conversation_stream(conversation)
             image_inputs = None
         else:
@@ -768,6 +788,10 @@ class streamingDataset(LMMDataset):
         )
 
         if self.text_sink != 0 or self.text_sliding_window != 0:
+            # SFT说明：
+            # 这里是在做长文本历史裁剪：
+            # 保留前面的固定 sink，再保留最近的一段 sliding window，
+            # 中间过长的 previous text 会被裁掉。
             previous_text_start_idx, previous_text_end_idx = self.get_range(inputs.input_ids, 'previous text', 0, contain_lf=True)
             need_truncate = previous_text_start_idx + self.text_sink + self.text_sliding_window <= previous_text_end_idx + 1
             if need_truncate: # 需要裁剪，滑动窗口滑到previous最后一个token
@@ -785,6 +809,10 @@ class streamingDataset(LMMDataset):
             if input_ids[sample_idx, im_start_idx + 1] == self.assistant_id:
                 labels[sample_idx, im_start_idx+3:im_end_idx+1] = input_ids[sample_idx, im_start_idx+3:im_end_idx+1]
 
+        # SFT说明：
+        # 只有 assistant span 会参与 NTP loss，user/video prompt token 都会被 mask 掉。
+        # 所以当前目标是“预测每一轮 streaming turn 的 assistant 文本”，
+        # 而不是“预测显式的 memory action”。
         inputs['labels'] = labels # 构建ntp的label
         if self.return_conversation:
             inputs['conversation'] = conversation
@@ -844,4 +872,3 @@ if __name__ == "__main__":
         for i, batch in tqdm.tqdm(enumerate(dataloader)):
             import pdb; pdb.set_trace()
             pass
-

@@ -1,0 +1,28 @@
+[
+  {
+    "video_id": "minimal_demo",
+    "video_path": "/home/sjs/VST/minimal_example_video.mp4",
+    "duration": 2.0,
+    "queries": [
+      {
+        "question": "What appears in the clip?",
+        "weight": 1.0,
+        "evidence_spans": [
+          {
+            "start": 0.0,
+            "end": 2.0
+          }
+        ],
+        "type": "detail"
+      }
+    ],
+    "clip_captions": [
+      "A colored frame with text F0 appears.",
+      "A colored frame with text F1 appears."
+    ],
+    "novelty_scores": [
+      0.8,
+      0.9
+    ]
+  }
+]
